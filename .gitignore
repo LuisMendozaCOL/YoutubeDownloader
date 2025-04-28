@@ -35,7 +35,7 @@ Thumbs.db
 
 # Ignorar la carpeta específica que mencionaste
 Otros/
-Scripts/
+
 # Ignorar archivos de configuración de IDEs
 *.sublime-project
 *.sublime-workspace
