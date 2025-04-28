@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Descargar Videos de YouTube</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='styles.css') }}"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    <!-- Importar SocketIO -->
+  </head>
+  <body>
+    <h1>Descargar Videos de YouTube</h1>
+    <h2>
+      Papá y mamá, les creé esta aplicación para que puedan descargar sus videos
+      o audios cuando lo necesiten.
+    </h2>
+
+    <form id="videoForm">
+      <input
+        type="text"
+        id="video_url"
+        name="video_url"
+        placeholder="Introduce la URL del video"
+        required
+      />
+      <button type="button" id="buscarBtn">Buscar</button>
+    </form>
+
+    <div id="videoPreview" style="display: none">
+      <h3>Vista previa:</h3>
+      <iframe
+        id="previewIframe"
+        width="560"
+        height="315"
+        frameborder="0"
+        allowfullscreen
+      ></iframe>
+
+      <form id="downloadForm">
+        <input type="hidden" id="hiddenVideoUrl" name="video_url" />
+        <button type="button" onclick="startDownload('video')">
+          Descargar Video
+        </button>
+        <button type="button" onclick="startDownload('audio')">
+          Descargar Audio
+        </button>
+      </form>
+
+      <div id="progressContainer">
+        <p>Progreso de la descarga:</p>
+        <div id="progressBar"></div>
+      </div>
+    </div>
+
+    <!-- Ventana emergente -->
+    <div id="modal" class="modal" style="display: none">
+      <div class="modal-content">
+        <p id="modalMessage"></p>
+        <button id="continueBtn">Continuar</button>
+      </div>
+    </div>
+
+    <script>
+      var socket = io(); // Conectar con SocketIO
+
+      document
+        .getElementById("buscarBtn")
+        .addEventListener("click", function () {
+          var videoUrl = document.getElementById("video_url").value;
+          if (videoUrl) {
+            var videoId = videoUrl.split("v=")[1];
+            var ampersandIndex = videoId.indexOf("&");
+            if (ampersandIndex !== -1) {
+              videoId = videoId.substring(0, ampersandIndex);
+            }
+
+            document.getElementById("previewIframe").src =
+              "https://www.youtube.com/embed/" + videoId;
+            document.getElementById("videoPreview").style.display = "block";
+            document.getElementById("hiddenVideoUrl").value = videoUrl;
+          }
+        });
+
+      function startDownload(type) {
+        var videoUrl = document.getElementById("hiddenVideoUrl").value;
+        var formData = new FormData();
+        formData.append("video_url", videoUrl);
+        formData.append("action", type);
+
+        fetch("/download", { method: "POST", body: formData });
+
+        // Mostrar barra de progreso al iniciar la descarga
+        document.getElementById("progressContainer").style.display = "block";
+      }
+
+      // Escuchar actualizaciones de progreso
+      socket.on("progress_update", function (data) {
+        var progressBar = document.getElementById("progressBar");
+        progressBar.style.width = data.progress + "%";
+      });
+
+      // Mostrar mensaje al completar la descarga
+      socket.on("download_complete", function (data) {
+        showDownloadCompleteMessage(data.message);
+      });
+
+      function showDownloadCompleteMessage(message) {
+        document.getElementById("modalMessage").innerText = message;
+        document.getElementById("modal").style.display = "block";
+      }
+
+      document
+        .getElementById("continueBtn")
+        .addEventListener("click", function () {
+          window.location.href = "/";
+        });
+
+      // Borra el mensaje al recargar la página
+      window.onload = function () {
+        document.getElementById("mensaje").innerText = "";
+      };
+    </script>
+  </body>
+</html>

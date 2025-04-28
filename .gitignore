@@ -1,0 +1,53 @@
+# Ignorar directorios comunes
+__pycache__/
+venv/
+env/
+node_modules/
+dist/
+build/
+.cache/
+.apt/
+
+# Ignorar archivos de configuración de sistema
+.DS_Store
+Thumbs.db
+
+# Ignorar archivos de entorno
+*.env
+.env.local
+.env.development
+.env.production
+
+# Ignorar archivos de compilación
+*.pyc
+*.pyo
+*.pyd
+
+# Ignorar logs y temporal files
+*.log
+*.tmp
+*.bak
+
+# Ignorar configuraciones de editores
+.vscode/
+.idea/
+*.swp
+
+# Ignorar la carpeta específica que mencionaste
+Otros/
+Scripts/
+# Ignorar archivos de configuración de IDEs
+*.sublime-project
+*.sublime-workspace
+*.code-workspace
+*.iml
+*.sublime-settings
+*.sublime-menu
+*.sublime-keymap
+*.sublime-completions
+*.sublime-snippet
+*.sublime-theme
+*.sublime-color-scheme
+*.sublime-macro
+*.sublime-build
+
