@@ -1,7 +1,3 @@
-Este archivo proporciona documentación para tu aplicación:
-
-md
-
 # 🎬 Youtube Downloader Web App
 
 Este proyecto es una aplicación web construida con Flask que permite descargar videos y audios de YouTube con una vista previa.
